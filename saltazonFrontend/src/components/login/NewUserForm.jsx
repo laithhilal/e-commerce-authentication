@@ -21,6 +21,8 @@ const onSubmit = (e) => {
   
   if (password !== confirmedPassword) {
     console.error("Password and Confirm Password fields do not match");
+    e.target.password_input.value = '';
+    e.target.confirmed_password_input.value = '';
     return;
   }
   
@@ -30,6 +32,8 @@ const onSubmit = (e) => {
     .post("http://localhost:8000/api/user", data)
     .then((response) => {
       console.log(response.data);
+      e.target.password_input.value = '';
+      e.target.confirmed_password_input.value = '';
     })
     .catch((error) => {
     console.error("There was a problem with the Axios POST operation:", error);
