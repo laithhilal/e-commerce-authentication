@@ -9,10 +9,16 @@ import bodyParser from "body-parser";
 
 import cors from 'cors';
 
+import dotenv from 'dotenv';
+
+import jwt from 'jsonwebtoken';
+
 const app = express();
 app.use(cors());
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
+
+dotenv.config();
 
 // Server port
 const HTTP_PORT = 8000;
@@ -28,7 +34,7 @@ app.get("/", (req, res, next) => {
 // Insert here other API endpoints
 
 //Get all users endpoint
-app.get("/api/user", (req, res, next) => {
+app.get("/api/users", (req, res, next) => {
     const sql = "select * from UserData";
     const params = [];
     db.all(sql, params, (err, rows) => {
@@ -201,6 +207,8 @@ app.get("/api/store", (req, res, next) => {
     });
 });
 
+const secretKey = process.env.SECRET_KEY;
+
 app.post("/api/user/login", (req, res, next) => {
     const errors = [];
     if (!req.body.email) {
@@ -214,7 +222,6 @@ app.post("/api/user/login", (req, res, next) => {
     return;
     }
     
-
     const sql = "SELECT * FROM UserData WHERE email = ? AND password = ?";
     const params = [req.body.email, md5(req.body.password)];
     
@@ -227,11 +234,50 @@ app.post("/api/user/login", (req, res, next) => {
             res.status(401).json({"error": "Invalid login credentials"});
             return;
         }
+
+        const token = jwt.sign({ id: row.id, email: row.email }, secretKey, { expiresIn: "1h" });
+
         res.json({
             "message": "success",
-            "data": row
+            "data": row,
+            "token": token
         });
+        next();
     });
+    });
+
+
+// Middleware function to check if the user is authenticated
+const checkAuth = (req, res, next) => {
+    // Get the token from the Authorization header
+    if (!req.headers.authorization) {
+        res.status(401).json({ error: 'Unauthorized: No token provided' });
+        return;
+    }
+    const token = req.headers.authorization.split(' ')[1];
+
+    // If no token is provided, return an error
+    if (!token) {
+        return res.status(401).json({ "error": "Not authorized" });
+    }
+
+    // Verify the token
+    try {
+        const decoded = jwt.verify(token, secretKey);
+        req.user = decoded;
+    } catch (err) {
+        return res.status(401).json({ "error": "Not authorized" });
+    }
+
+    next();
+};
+    
+    // Endpoint to get the current logged in user
+    app.get("/api/user", checkAuth, (req, res, next) => {
+        res.json({
+        "message": "success",
+        "data": req.user
+        });
     });
 
 //get all with storeId :something
