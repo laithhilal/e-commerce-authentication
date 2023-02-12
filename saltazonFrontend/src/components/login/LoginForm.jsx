@@ -2,9 +2,10 @@ import axios from 'axios';
 import React, { useState } from 'react';
 
 function LoginForm() {
-  const [token, setToken] = useState(null);
+  const [token, setToken] = useState(localStorage.getItem('token') || null);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [loggedInEmail, setLoggedInEmail] = useState(localStorage.getItem('email') || '');
 
   const onSubmit = e => {
     e.preventDefault();
@@ -27,7 +28,10 @@ function LoginForm() {
       .then((response) => {
         console.log(response.data);
         setToken(response.data.token);
+        localStorage.setItem('token', response.data.token);
         setPassword('');
+        setLoggedInEmail(email);
+        localStorage.setItem('email', loggedInEmail)
       })
       .catch((error) => {
         console.error("Email or Password is Incorrect", error);
@@ -35,8 +39,16 @@ function LoginForm() {
       });
   };
 
+  const onLogout = () => {
+    setToken(null);
+    localStorage.removeItem('token');
+    localStorage.removeItem('email');
+  };
+
   return (
     <>
+      {!token && (
+        <>
       <h3>Login</h3>
       <form onSubmit={onSubmit} className={"login_form"}>
         <label htmlFor="email_input">Email</label>
@@ -47,27 +59,12 @@ function LoginForm() {
         <br />
         <input type={"submit"} />
       </form>
+        </>
+      )}
       {token && (
         <>
-          <p>Token: {token}</p>
-          <button
-            onClick={() => {
-              axios
-                .get("http://localhost:8000/api/user", {
-                  headers: {
-                    Authorization: `Bearer ${token}`,
-                  },
-                })
-                .then((response) => {
-                  console.log(response.data);
-                })
-                .catch((error) => {
-                  console.error("Could not fetch user data", error);
-                });
-            }}
-          >
-            Fetch User Data
-          </button>
+        <p>Already logged in as {loggedInEmail.split('@')[0]}</p>
+        <button onClick={onLogout}>Logout</button>
         </>
       )}
     </>
