@@ -1,5 +1,6 @@
 import './App.css';
-import {useState} from 'react';
+import {useState, useEffect} from 'react';
+import axios from 'axios';
 
 import {
     BrowserRouter as Router,
@@ -17,6 +18,7 @@ import ProductList from './components/Products/ProductList.jsx';
 import LoginForm from './components/login/LoginForm.jsx';
 import NewUserForm from './components/login/NewUserForm.jsx';
 import SuperAdminPage from "./admin/SuperAdminPage.jsx";
+
 
 function addToCart(productId) {
     console.log("Add " + productId + " From the App")
@@ -36,6 +38,14 @@ function getCurrentCart() {
 
 function App() {
     const [currentCart, setCurrentCart] = useState(getCurrentCart());
+    const [products, setProducts] = useState([]);
+
+    useEffect(() => {
+        axios.get('http://localhost:8000/api/product')
+            .then(res => setProducts(res.data.data))
+            .catch(err => console.log(err));
+    }, []);
+
     return (
         <div className="App">
             <Router>
@@ -47,7 +57,7 @@ function App() {
                     <Route exact path='/create-new-user' element={< NewUserForm/>}></Route>
                     <Route exact path='/login' element={< LoginForm/>}></Route>
                     <Route exact path='/'
-                           element={< ProductList products={fakeProducts} addToCart={addToCart}/>}></Route>
+                           element={< ProductList products={products} addToCart={addToCart}/>}></Route>
                     <Route exact path='/cart'
                            element={< Cart products={currentCart} removeFromCart={removeFromCart}/>}></Route>
                     <Route exact path='/admin' element={< AdminPage/>}></Route>
