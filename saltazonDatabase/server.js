@@ -226,6 +226,12 @@ app.get("/api/store/:id/product", (req, res, next) => {
 //add a product to store
 app.post("/api/store/:id/product", (req, res, next) => {
 
+    // check if user has admin role
+// if (req.user.role !== "admin") {
+//     res.status(403).json({"error": "Unauthorized access"});
+//     return;
+// }
+
     const sql = "insert into ProductData (title, description, imageUrl, price, quantity, category, storeId) values (?,?,?,?,?,?,?)";
     const params = [req.body.title, req.body.description, req.body.imageUrl, req.body.price, req.body.quantity, req.body.category,  req.params.id];
     db.run(sql, params, function (err, result) {
@@ -245,6 +251,12 @@ app.post("/api/store/:id/product", (req, res, next) => {
 app.delete("/api/store/:storeId/product/:productId", (req, res, next) => {
     const storeId = req.params.storeId;
     const productId = req.params.productId;
+
+    // check if user has admin role
+// if (req.user.role !== "admin") {
+//     res.status(403).json({"error": "Unauthorized access"});
+//     return;
+// }
     
     const sql = `DELETE FROM ProductData WHERE storeId = ? and id = ?`;
     const params = [storeId, productId];
