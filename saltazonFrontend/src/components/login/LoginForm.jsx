@@ -1,11 +1,11 @@
 import axios from 'axios';
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 function LoginForm() {
   const [token, setToken] = useState(localStorage.getItem('token') || null);
   const [email, setEmail] = useState('');
+  const [currentUser, setCurrentUser] = useState({});
   const [password, setPassword] = useState('');
-  const [loggedInEmail, setLoggedInEmail] = useState(localStorage.getItem('email') || '');
 
   const onSubmit = e => {
     e.preventDefault();
@@ -30,8 +30,6 @@ function LoginForm() {
         setToken(response.data.token);
         localStorage.setItem('token', response.data.token);
         setPassword('');
-        setLoggedInEmail(email);
-        localStorage.setItem('email', loggedInEmail)
       })
       .catch((error) => {
         console.error("Email or Password is Incorrect", error);
@@ -39,10 +37,27 @@ function LoginForm() {
       });
   };
 
+
+  useEffect(() => {
+    if (token) {
+      axios
+        .get("http://localhost:8000/api/user", {
+          headers: {
+            Authorization: `Bearer ${token}`
+          }
+        })
+        .then(response => {
+          setCurrentUser(response.data.data);
+        })
+        .catch(error => {
+          console.error("Error getting user", error);
+        });
+    }
+  }, [token]);
+
   const onLogout = () => {
     setToken(null);
     localStorage.removeItem('token');
-    localStorage.removeItem('email');
   };
 
   return (
@@ -63,7 +78,7 @@ function LoginForm() {
       )}
       {token && (
         <>
-        <p>Already logged in as {loggedInEmail.split('@')[0]}</p>
+        <p>Already logged in as {currentUser.email}</p>
         <button onClick={onLogout}>Logout</button>
         </>
       )}
