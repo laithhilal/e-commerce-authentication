@@ -241,6 +241,22 @@ app.post("/api/store/:id/product", (req, res, next) => {
     });
 });
 
+//delete a product in a store
+app.delete("/api/store/:storeId/product/:productId", (req, res, next) => {
+    const storeId = req.params.storeId;
+    const productId = req.params.productId;
+    
+    const sql = `DELETE FROM ProductData WHERE storeId = ? and id = ?`;
+    const params = [storeId, productId];
+    db.run(sql, params, function (err, result) {
+        if (err) {
+            res.status(400).json({"error": err.message});
+            return;
+        }
+        res.json({"message": "product deleted", "changes": this.changes});
+    });
+});
+
 const secretKey = process.env.SECRET_KEY;
 
 app.post("/api/user/login", (req, res, next) => {
