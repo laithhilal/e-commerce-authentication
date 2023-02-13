@@ -221,7 +221,25 @@ app.get("/api/store/:id/product", (req, res, next) => {
     "data":rows
     })
     });
+});
+
+//add a product to store
+app.post("/api/store/:id/product", (req, res, next) => {
+
+    const sql = "insert into ProductData (title, description, imageUrl, price, quantity, category, storeId) values (?,?,?,?,?,?,?)";
+    const params = [req.body.title, req.body.description, req.body.imageUrl, req.body.price, req.body.quantity, req.body.category,  req.params.id];
+    db.run(sql, params, function (err, result) {
+    if (err) {
+    res.status(400).json({ error: err.message });
+    return;
+    }
+    res.json({
+    message: "success",
+    data: req.body,
+    id: this.lastID
     });
+    });
+});
 
 const secretKey = process.env.SECRET_KEY;
 

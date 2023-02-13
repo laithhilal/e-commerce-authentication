@@ -55,7 +55,7 @@ let db = new sqlite3.Database(DBSOURCE, (err) => {
             });
         const products = GetProductsAsJson();
         db.run(`create table ProductData (
-                    id INT, 
+                    id INTEGER PRIMARY KEY AUTOINCREMENT,
                     title VARCHAR(50), 
                     description TEXT, 
                     imageUrl VARCHAR(50),
@@ -69,9 +69,9 @@ let db = new sqlite3.Database(DBSOURCE, (err) => {
                     console.log('Already Products-table there');
                 } else {
                     // Table just created, creating some rows
-                    const insert = 'INSERT INTO ProductData (id, title, description, imageUrl, storeId, price, quantity, category) VALUES (?,?,?,?,?,?,?,?)';
+                    const insert = 'INSERT INTO ProductData (title, description, imageUrl, storeId, price, quantity, category) VALUES (?,?,?,?,?,?,?)';
                     products.map(product => {
-                        db.run(insert, [product.id, product.title, product.description, product.imageUrl, product.storeId, product.price, product.quantity, product.category]);
+                        db.run(insert, [product.title, product.description, product.imageUrl, product.storeId, product.price, product.quantity, product.category]);
                     })
                     console.log(`${products.length} Products created`);
                 }
