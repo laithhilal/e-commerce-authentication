@@ -207,6 +207,22 @@ app.get("/api/store", (req, res, next) => {
     });
 });
 
+//get all products in a specific store
+app.get("/api/store/:id/product", (req, res, next) => {
+    const sql = "select * from ProductData where storeId = ?";
+    const params = [req.params.id];
+    db.all(sql, params, (err, rows) => {
+    if (err) {
+    res.status(400).json({"error":err.message});
+    return;
+    }
+    res.json({
+    "message":"success",
+    "data":rows
+    })
+    });
+    });
+
 const secretKey = process.env.SECRET_KEY;
 
 app.post("/api/user/login", (req, res, next) => {
