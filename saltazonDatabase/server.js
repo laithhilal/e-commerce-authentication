@@ -177,7 +177,7 @@ app.get("/api/product/:id", (req, res, next) => {
 
 //get specific store by id
 app.get("/api/store/:id", (req, res, next) => {
-    const sql = "select * from StoreData where id = ?";
+    const sql = "select * from StoreData where uniqueStoreId = ?";
     const params = [req.params.id];
     db.get(sql, params, (err, row) => {
         if (err) {
