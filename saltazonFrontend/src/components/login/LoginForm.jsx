@@ -1,11 +1,14 @@
 import axios from 'axios';
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 
 function LoginForm() {
   const [token, setToken] = useState(localStorage.getItem('token') || null);
   const [email, setEmail] = useState('');
   const [currentUser, setCurrentUser] = useState({});
   const [password, setPassword] = useState('');
+
+  const navigate = useNavigate();
 
   const onSubmit = e => {
     e.preventDefault();
@@ -30,6 +33,7 @@ function LoginForm() {
         setToken(response.data.token);
         localStorage.setItem('token', response.data.token);
         setPassword('');
+        navigate('/'); // redirect to the homepage
       })
       .catch((error) => {
         console.error("Email or Password is Incorrect", error);
