@@ -118,7 +118,7 @@ const userSchema = Joi.object({
 
 //Post a new user endpoint
 app.post("/api/user", (req, res, next) => {
-    
+
     const { error, value } = userSchema.validate(req.body);
 
     if (error) {
@@ -196,7 +196,7 @@ app.get("/api/product/:id", (req, res, next) => {
             return;
         }
         res.json({
-            "message":"success",
+            "message":"success :)",
             "data":row
         })
     });
