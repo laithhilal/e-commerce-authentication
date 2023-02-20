@@ -13,6 +13,8 @@ import dotenv from 'dotenv';
 
 import jwt from 'jsonwebtoken';
 
+import Joi from 'joi';
+
 const app = express();
 app.use(cors());
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -109,9 +111,19 @@ app.delete("/api/users/:id", (req, res, next) => {
         });
 })
 
+const userSchema = Joi.object({
+    email: Joi.string().email().required(),
+    password: Joi.string().required().min(6)
+  });
 
 //Post a new user endpoint
 app.post("/api/user", (req, res, next) => {
+    
+    const { error, value } = userSchema.validate(req.body);
+
+    if (error) {
+        return res.status(400).json({ error: error.details[0].message });
+      }
     const errors=[];
     if (!req.body.password){
         errors.push("No password specified");
@@ -124,8 +136,8 @@ app.post("/api/user", (req, res, next) => {
         return;
     }
     const data = {
-        email: req.body.email,
-        password : md5(req.body.password),
+        email: value.email,
+        password: md5(value.password),
         role: req.body.role,
     }
     
