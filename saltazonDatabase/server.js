@@ -96,7 +96,7 @@ app.patch("/api/user/:id", (req, res, next) => {
         });
 })
 
-app.delete("/api/user/:id", (req, res, next) => {
+app.delete("/api/users/:id", (req, res, next) => {
     db.run(
         'DELETE FROM UserData WHERE id = ?',
         req.params.id,
@@ -128,18 +128,33 @@ app.post("/api/user", (req, res, next) => {
         password : md5(req.body.password),
         role: req.body.role,
     }
-    const sql ='INSERT INTO UserData (email, password, role) VALUES (?,?,?)'
-    const params =[data.email, data.password, data.role]
-    db.run(sql, params, function (err, result) {
-        if (err){
-            res.status(400).json({"error": err.message})
+    
+    const sql = 'SELECT * FROM UserData WHERE email = ?';
+    const params = [data.email];
+    db.get(sql, params, (err, row) => {
+        if (err) {
+            res.status(400).json({ "error": err.message });
             return;
         }
-        res.json({
-            "message": "success",
-            "data": data,
-            "id" : this.lastID
-        })
+        if (row) {
+            // email is already in use
+            res.status(400).json({ "error": "Email address is already in use" });
+        } else {
+            // email is available, insert new user
+            const insertSql = 'INSERT INTO UserData (email, password, role) VALUES (?,?,?)';
+            const insertParams = [data.email, data.password, data.role];
+            db.run(insertSql, insertParams, function (err, result) {
+                if (err) {
+                    res.status(400).json({ "error": err.message });
+                    return;
+                }
+                res.json({
+                    "message": "success",
+                    "data": data,
+                    "id": this.lastID
+                })
+            });
+        }
     });
 })
 
