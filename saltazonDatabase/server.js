@@ -196,7 +196,7 @@ app.get("/api/product/:id", (req, res, next) => {
             return;
         }
         res.json({
-            "message":"success :)",
+            "message":"success",
             "data":row
         })
     });
