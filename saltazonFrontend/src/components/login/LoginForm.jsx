@@ -33,7 +33,7 @@ function LoginForm() {
         setToken(response.data.token);
         localStorage.setItem('token', response.data.token);
         setPassword('');
-        navigate('/'); // redirect to the homepage
+        navigate('/');
       })
       .catch((error) => {
         console.error("Email or Password is Incorrect", error);

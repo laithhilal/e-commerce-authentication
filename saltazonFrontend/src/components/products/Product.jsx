@@ -1,8 +1,8 @@
 import './Product.css'
 
-function Product({product, addToCart}) {
+function Product({product, addToCart, onClick}) {
     return (
-        <>
+        <div onClick={onClick}>
             <article className={"product_item"}>
                 <section className={"text_section"}>
                     <h1>
@@ -15,7 +15,7 @@ function Product({product, addToCart}) {
                 <img src={product.imageUrl} alt={"picture of product"}/>
                 <button onClick={() => addToCart(product.id)}>Add to Cart</button>
             </article>
-        </>
+        </div>
     )
 }
 
