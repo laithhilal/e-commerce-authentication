@@ -15,6 +15,8 @@ import jwt from 'jsonwebtoken';
 
 import Joi from 'joi';
 
+import passport from "./passport.js";
+
 const app = express();
 app.use(cors());
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -325,7 +327,6 @@ app.post("/api/user/login", (req, res, next) => {
         }
 
         const token = jwt.sign({ id: row.id, email: row.email }, secretKey, { expiresIn: "1h" });
-
         res.json({
             "message": "success",
             "data": row,

@@ -2,7 +2,6 @@ import Product from './Product.jsx';
 import "../../App.css"
 import CategorySorter from "./CategorySorter.jsx";
 import React, { useState, useEffect } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
 
 const sorted = false;
 const PAGE_SIZE = 5;
@@ -30,8 +29,6 @@ function ProductList({products, addToCart}) {
     const [searchQuery, setSearchQuery] = useState('');
     const [currentPage, setCurrentPage] = useState(1);
     const [selectedProduct, setSelectedProduct] = useState(null);
-
-    const navigate = useNavigate();
 
     let sortedProducts;
     if (sorted) {
