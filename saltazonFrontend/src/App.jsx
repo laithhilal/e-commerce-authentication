@@ -18,8 +18,8 @@ import NewUserForm from './components/login/NewUserForm.jsx';
 import SuperAdminPage from "./admin/SuperAdminPage.jsx";
 
 function getCurrentCart() {
-    const email = localStorage.getItem('email')
-    const cart = localStorage.getItem(`cart_${email}`);
+    const id = localStorage.getItem('id')
+    const cart = localStorage.getItem(`cart_${id}`);
     return cart ? JSON.parse(cart) : [];
     //update to get from localstorage
 }
@@ -37,19 +37,19 @@ function App() {
 
     function addToCart(productId) {
     console.log("Add " + productId + " From the App")
-    const email = localStorage.getItem('email');
+    const id = localStorage.getItem('id');
     const product = products.find(p => p.id === productId);
     setCurrentCart(prevCart => {
         const newCart = [...prevCart, product];
-        localStorage.setItem(`cart_${email}`, JSON.stringify(newCart));
+        localStorage.setItem(`cart_${id}`, JSON.stringify(newCart));
         return newCart;
     });
 }
 
     function removeFromCart(productId) {
     console.log("Remove " + productId + " From the App")
-    const email = localStorage.getItem('email');
-    const cart = localStorage.getItem(`cart_${email}`);
+    const id = localStorage.getItem('id');
+    const cart = localStorage.getItem(`cart_${id}`);
     if (cart) {
         const currentCart = JSON.parse(cart);
         const newCart = currentCart.filter(p => p.id !== productId);

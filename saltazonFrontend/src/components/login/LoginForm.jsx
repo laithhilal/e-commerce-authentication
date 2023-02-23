@@ -32,7 +32,7 @@ function LoginForm() {
         console.log(response.data);
         setToken(response.data.token);
         localStorage.setItem('token', response.data.token);
-        localStorage.setItem('email', response.data.data.email)
+        localStorage.setItem('id', response.data.data.id)
         setPassword('');
         navigate('/');
       })
@@ -66,7 +66,7 @@ function LoginForm() {
   const onLogout = () => {
     setToken(null);
     localStorage.removeItem('token');
-    localStorage.removeItem('email')
+    localStorage.removeItem('id')
     window.location.reload();
   };
 
