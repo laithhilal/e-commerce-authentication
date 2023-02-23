@@ -32,6 +32,7 @@ function LoginForm() {
         console.log(response.data);
         setToken(response.data.token);
         localStorage.setItem('token', response.data.token);
+        localStorage.setItem('email', response.data.data.email)
         setPassword('');
         navigate('/');
       })
@@ -39,6 +40,7 @@ function LoginForm() {
         console.error("Email or Password is Incorrect", error);
         setPassword('');
       });
+      window.location.reload();
   };
 
 
@@ -62,6 +64,8 @@ function LoginForm() {
   const onLogout = () => {
     setToken(null);
     localStorage.removeItem('token');
+    localStorage.removeItem('email')
+    window.location.reload();
   };
 
   return (
