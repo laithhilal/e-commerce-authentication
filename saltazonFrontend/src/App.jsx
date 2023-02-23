@@ -89,8 +89,8 @@ function App() {
                            element={< ProductList products={products} addToCart={addToCart}/>}></Route>
                     <Route exact path='/cart'
                            element={< Cart products={currentCart} removeFromCart={removeFromCart}/>}></Route>
-                    <Route exact path='/admin' element={< AdminPage/>}></Route>
-                    <Route exact path='/admin/super' element={< SuperAdminPage/>}></Route>
+                    <Route exact path='/admin' element={< AdminPage products={products} />}></Route>
+                    <Route exact path='/admin/super' element={< SuperAdminPage />}></Route>
                 </Routes>
             </Router>
         </div>

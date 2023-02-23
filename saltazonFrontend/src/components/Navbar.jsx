@@ -1,6 +1,9 @@
 import {Link} from 'react-router-dom';
 
 function NavBar() {
+
+  const role = localStorage.getItem('role')
+
   return (
       <nav className={"navbar"}>
         <ul>
@@ -16,6 +19,13 @@ function NavBar() {
           <li>
             <Link to={'/cart'} className={"nav_button"}>Go to cart</Link>
           </li>
+          {role === 'admin' && (
+          <li>
+            <Link to={'/admin'} className={'nav_button'}>
+              Admin
+            </Link>
+          </li>
+          )}
         </ul>
       </nav>
   )

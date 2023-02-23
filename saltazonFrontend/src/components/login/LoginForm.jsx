@@ -33,6 +33,7 @@ function LoginForm() {
         setToken(response.data.token);
         localStorage.setItem('token', response.data.token);
         localStorage.setItem('id', response.data.data.id)
+        localStorage.setItem('role', response.data.data.role)
         setPassword('');
         navigate('/');
       })
@@ -42,7 +43,7 @@ function LoginForm() {
       });
       setTimeout(() => {
         window.location.reload();
-      }, 500);
+      }, 200);
   };
 
 
@@ -67,6 +68,7 @@ function LoginForm() {
     setToken(null);
     localStorage.removeItem('token');
     localStorage.removeItem('id')
+    localStorage.removeItem('role')
     window.location.reload();
   };
 

@@ -21,14 +21,19 @@ function compareProductCategory(a, b) {
     return 0;
 }
 
-function sortSomething(category) {
+function sortSomething(category, products, setFilteredProducts) {
     console.log('sorting things would be cool' + category);
+    const filteredProducts = products.filter((product) => {
+        return product.category === category;
+    });
+    setFilteredProducts(filteredProducts);
 }
 
 function ProductList({products, addToCart}) {
     const [searchQuery, setSearchQuery] = useState('');
     const [currentPage, setCurrentPage] = useState(1);
     const [selectedProduct, setSelectedProduct] = useState(null);
+    const [filteredProducts, setFilteredProducts] = useState(products);
 
     let sortedProducts;
     if (sorted) {
@@ -37,30 +42,48 @@ function ProductList({products, addToCart}) {
         sortedProducts = products;
     }
 
-    const filteredProducts = sortedProducts.filter((product) => {
-        return product.title && product.title.toLowerCase().includes(searchQuery.toLowerCase());
-    });
-
     useEffect(() => {
         setCurrentPage(1);
-      }, [searchQuery]);
+    }, [searchQuery]);
+
+    useEffect(() => {
+        setFilteredProducts(products);
+    }, [products]);
+
+    useEffect(() => {
+        const filteredProducts = products.filter((product) => {
+            return product.title.toLowerCase().includes(searchQuery.toLowerCase());
+        });
+        setFilteredProducts(filteredProducts);
+    }, [searchQuery, products]);
 
     const startIndex = (currentPage - 1) * PAGE_SIZE;
     const endIndex = startIndex + PAGE_SIZE;
     const paginatedProducts = filteredProducts.slice(startIndex, endIndex);
-  
+
     const totalPages = Math.ceil(filteredProducts.length / PAGE_SIZE);
 
     const handleProductClick = (productId) => {
         const product = products.find((p) => p.id === productId);
         setSelectedProduct(product);
-      };
-      
+    };
+
+    const categories = [...new Set(products.map(product => product.category))];
+
+    function handleCategoryChange(category) {
+        if (category === 'All') {
+            setFilteredProducts(products); // show all products
+        } else {
+            sortSomething(category, products, setFilteredProducts);
+        }
+    }
+
+
     return (
         <>
         {!selectedProduct && 
             <>
-            <CategorySorter categories={['First Category', 'Second Category']} sorterFunction={sortSomething}/>
+            <CategorySorter categories={['All', ...categories]} sorterFunction={handleCategoryChange}/>
             <div className="search-wrapper">
                 <input type="text" placeholder="Search products..." value={searchQuery} onChange={(event) => setSearchQuery(event.target.value)} />
             </div>
