@@ -15,8 +15,6 @@ import jwt from 'jsonwebtoken';
 
 import Joi from 'joi';
 
-import passport from "./passport.js";
-
 const app = express();
 app.use(cors());
 app.use(bodyParser.urlencoded({ extended: false }));
@@ -115,7 +113,8 @@ app.delete("/api/users/:id", (req, res, next) => {
 
 const userSchema = Joi.object({
     email: Joi.string().email().required(),
-    password: Joi.string().required().min(6)
+    password: Joi.string().required().min(6),
+    role: Joi.string().valid('admin', 'user').required()
   });
 
 //Post a new user endpoint
@@ -140,7 +139,7 @@ app.post("/api/user", (req, res, next) => {
     const data = {
         email: value.email,
         password: md5(value.password),
-        role: req.body.role,
+        role: value.role,
     }
     
     const sql = 'SELECT * FROM UserData WHERE email = ?';
@@ -327,6 +326,7 @@ app.post("/api/user/login", (req, res, next) => {
         }
 
         const token = jwt.sign({ id: row.id, email: row.email }, secretKey, { expiresIn: "1h" });
+
         res.json({
             "message": "success",
             "data": row,
