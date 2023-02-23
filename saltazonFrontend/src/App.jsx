@@ -19,9 +19,7 @@ import SuperAdminPage from "./admin/SuperAdminPage.jsx";
 
 function getCurrentCart() {
     const email = localStorage.getItem('email')
-    console.log(email);
     const cart = localStorage.getItem(`cart_${email}`);
-    console.log(cart);
     return cart ? JSON.parse(cart) : [];
     //update to get from localstorage
 }
@@ -40,7 +38,6 @@ function App() {
     function addToCart(productId) {
     console.log("Add " + productId + " From the App")
     const email = localStorage.getItem('email');
-    console.log('Adding to cart for email:', email);
     const product = products.find(p => p.id === productId);
     setCurrentCart(prevCart => {
         const newCart = [...prevCart, product];

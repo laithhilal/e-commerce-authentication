@@ -40,7 +40,9 @@ function LoginForm() {
         console.error("Email or Password is Incorrect", error);
         setPassword('');
       });
-      window.location.reload();
+      setTimeout(() => {
+        window.location.reload();
+      }, 500);
   };
 
 

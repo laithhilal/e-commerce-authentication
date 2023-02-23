@@ -8,7 +8,7 @@ function NavBar() {
             <Link to={'/'} className={"nav_button"}>SHOW ME ALL THE ITEMS</Link>
           </li>
           <li>
-            <Link to={'/login'} className={"nav_button"}>Login</Link>
+            <Link to={'/login'} className={"nav_button"}>Login/Logout</Link>
           </li>
           <li>
             <Link to={'/create-new-user'} className={"nav_button"}>Create new user</Link>
